@@ -1,6 +1,7 @@
 # ECS Fargate ハンズオン環境
 
 AWS ECS Fargate を使用したコンテナアプリケーションのデプロイ環境を Terraform で構築します。
+※claudeで作成しました。
 
 ## 📋 目次
 
@@ -157,10 +158,13 @@ CMD ["nginx", "-g", "daemon off;"]
 docker build -t ecs-handson-app .
 
 # タグ付け
-docker tag ecs-handson-app:latest $(terraform output -raw ecr_repository_url):latest
+docker tag ecs-handson-app:latest "$(terraform output -raw ecr_repository_url):latest"
+
+# ログイン
+aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin <アカウントID>.dkr.ecr.ap-northeast-1.amazonaws.com/
 
 # ECR へプッシュ
-docker push $(terraform output -raw ecr_repository_url):latest
+docker push "$(terraform output -raw ecr_repository_url):latest"
 ```
 
 ### 5. ECS サービスの更新
